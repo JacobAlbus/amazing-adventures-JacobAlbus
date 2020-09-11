@@ -1,0 +1,24 @@
+{ "rooms": [
+  {
+    "roomCoordinates": [0, 0],
+    "availableDoors": ["east"],
+    "unavailableDoors":  [],
+    "items":  [],
+    "description": "You're in a dark room with one visible door."
+  },
+  {
+    "roomCoordinates": [1, 0],
+    "availableDoors": ["west", "north"],
+    "unavailableDoors":  [],
+    "items":  ["torch"],
+    "description": "Doesn't seem too different from the last room."
+  },
+  {
+    "roomCoordinates": [1, 1],
+    "availableDoors": ["south"],
+    "unavailableDoors":  ["north"],
+    "items":  [],
+    "description": "There's a door but it's locked."
+  }
+]
+}

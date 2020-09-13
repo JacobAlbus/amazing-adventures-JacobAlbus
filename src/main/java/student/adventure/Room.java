@@ -31,16 +31,16 @@ public class Room {
         return availableDoors;
     }
 
-    public void setAvailableDoors(ArrayList<String> doors){
-        this.availableDoors = doors;
+    public void addAvailableDoors(String door){
+        availableDoors.add(door);
     }
 
     public ArrayList<String> getUnavailableDoors(){
         return unavailableDoors;
     }
 
-    public void setUnavailableDoors(ArrayList<String> doors){
-        this.unavailableDoors = doors;
+    public void removeUnavailableDoors(String door){
+        unavailableDoors.remove(door);
     }
 
     public ArrayList<String> getAvailableItems(){
@@ -63,7 +63,11 @@ public class Room {
         return primaryDescription;
     }
 
-    public String getSecondaryyDescription(){
+    public void setPrimaryDescription(String description){
+        this.primaryDescription = description;
+    }
+
+    public String getSecondaryDescription(){
         return secondaryDescription;
     }
 

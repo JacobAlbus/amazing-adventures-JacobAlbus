@@ -2,6 +2,7 @@ package student.adventure;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class Player {
     private int[] position;
@@ -31,8 +32,6 @@ public class Player {
         if(room.getAvailableItems().contains(item)){
             items.add(item);
             room.getAvailableItems().remove(item);
-            System.out.println(items);
-            System.out.println(room.getAvailableItems());
             System.out.print("> ");
         } else{
             System.out.println("It seems like the room doesn't have that item");
@@ -71,11 +70,38 @@ public class Player {
 
     /**
      * Uses item if it is in player's inventory
-     * @param item item that the plaer will use
+     * @param item item that the player will use
      */
-    public void useItem(String item){
-        System.out.println("Used" + item);
-        System.out.print("> ");
+    public void useItem(Room room, String item){
+        //ArrayList<String> itemsInGame = new ArrayList<>(Arrays.asList("torch"));
+        if(items.contains(item)){
+            switch(item){
+                case "torch":
+                    int[] torchCoords = {0, 0};
+                    if(isRoomCorrect(room, torchCoords)){
+                        room.setPrimaryDescription(room.getSecondaryDescription());
+                        room.addAvailableItem(room.getUnavailbleItems().get(0));
+                        items.remove(item);
+                    }
+                    break;
+                case "key":
+                    int[] keyCoords = {1, 1};
+                    if(isRoomCorrect(room, keyCoords)){
+                        room.setPrimaryDescription(room.getSecondaryDescription());
+                        room.addAvailableDoors(room.getUnavailableDoors().get(0));
+                        items.remove(item);
+                    }
+                    break;
+                default:
+                    System.out.println("Sorry but that item has no use");
+                    System.out.print("> ");
+                    break;
+            }
+
+        } else {
+            System.out.println("You do not have this item");
+            System.out.print("> ");
+        }
     }
 
     /**
@@ -107,6 +133,24 @@ public class Player {
             System.out.print("> ");
         }
 
+    }
+
+    /**
+     * Checks if player is using item in correct room
+     * @param room room player is currently in
+     * @param coords coords the player should be using the item in
+     * @return true if player is in correct room
+     */
+    private boolean isRoomCorrect(Room room, int[] coords){
+        boolean isRoomCorrect = false;
+        if(Arrays.equals(room.getRoomCoordinates(), coords)){
+            isRoomCorrect = true;
+        } else {
+            System.out.println("Sorry but you can't use that item here");
+            System.out.print("> ");
+        }
+
+        return isRoomCorrect;
     }
 
 }

@@ -117,7 +117,8 @@ public class GameEngine {
                 player.dropItem(room, noun);
                 break;
             case "use":
-                player.useItem(noun);
+                player.useItem(room, noun);
+                printRoomMessage(room);
                 break;
             case "go":
                 player.updatePosition(room, noun);

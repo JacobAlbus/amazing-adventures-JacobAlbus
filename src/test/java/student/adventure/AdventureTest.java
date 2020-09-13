@@ -8,13 +8,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -110,7 +107,7 @@ public class AdventureTest {
         System.setOut(old);
 
         String printedString = baos.toString().split(">")[0];
-        assertEquals("Usedfoo\r\n", printedString);
+        assertEquals("You do not have this item\r\n", printedString);
     }
 
     @Test

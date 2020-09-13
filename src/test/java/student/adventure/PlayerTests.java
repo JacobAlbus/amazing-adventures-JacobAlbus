@@ -156,31 +156,97 @@ public class PlayerTests {
     }
 
     @Test
-    public void testPlayerMathTest(){
-        player.takeItem(board.getRoom(6), "calculator");
-        player.useItem(board.getRoom(5), "calculator");
-
-        InputStream stdin = System.in;
-        ByteArrayInputStream in = new ByteArrayInputStream("64".getBytes());
-        System.setIn(in);
-        Scanner scanner = new Scanner(System.in);
-        System.setIn(stdin);
-
+    public void testPlayerUsesItemNoneFound(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
 
         PrintStream old = System.out;
 
         System.setOut(ps);
-
-        System.setOut(ps);
-
+        player.useItem(board.getRoom(0), "torch");
 
         System.out.flush();
         System.setOut(old);
 
-        String printedString = baos.toString();
-        assertEquals(" Can't drop the item, it's already in the room\r\n", printedString);
-
+        String printedString = baos.toString().split(">")[0];
+        assertEquals("You do not have this item\r\n", printedString);
     }
+
+    @Test
+    public void testPlayerUsesItemInvalidRoom(){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+
+        PrintStream old = System.out;
+        System.setOut(ps);
+
+        player.takeItem(board.getRoom(1), "torch");
+        player.useItem(board.getRoom(1), "torch");
+
+        System.out.flush();
+        System.setOut(old);
+
+        String printedString = baos.toString().split(">")[1].trim();
+        assertEquals("It appears that the item has no use here", printedString);
+    }
+
+    @Test
+    public void testPlayerUsesTorch(){
+        player.takeItem(board.getRoom(1), "torch");
+        player.useItem(board.getRoom(0), "torch");
+
+        String description = board.getRoom(0).getPrimaryDescription();
+        assertEquals("After using the torch, you see a sparkle in one of the cracks. " +
+                             "After investigating, you see a key", description);
+    }
+
+    @Test
+    public void testPlayerUsesKey(){
+        player.takeItem(board.getRoom(1), "torch");
+        player.useItem(board.getRoom(0), "torch");
+        player.takeItem(board.getRoom(0), "key");
+        player.useItem(board.getRoom(2), "key");
+
+        String description = board.getRoom(2).getPrimaryDescription();
+        assertEquals("The door at the north end opened!", description);
+    }
+
+    @Test
+    public void testPlayerUsesLighter(){
+        player.takeItem(board.getRoom(7), "lighter");
+        player.useItem(board.getRoom(8), "lighter");
+
+        String description = board.getRoom(8).getPrimaryDescription();
+        assertEquals("WOW, the smell of rotten eggs was actually a gas leak " +
+                             "and the lighter caused the room to combust. The south door was blown down", description);
+    }
+
+//    @Test
+//    public void testPlayerMathTest(){
+//        player.takeItem(board.getRoom(6), "calculator");
+//        player.useItem(board.getRoom(5), "calculator");
+//
+//        InputStream stdin = System.in;
+//        ByteArrayInputStream in = new ByteArrayInputStream("64".getBytes());
+//        System.setIn(in);
+//        Scanner scanner = new Scanner(System.in);
+//        System.setIn(stdin);
+//
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        PrintStream ps = new PrintStream(baos);
+//
+//        PrintStream old = System.out;
+//
+//        System.setOut(ps);
+//
+//        System.setOut(ps);
+//
+//
+//        System.out.flush();
+//        System.setOut(old);
+//
+//        String printedString = baos.toString();
+//        assertEquals(" Can't drop the item, it's already in the room\r\n", printedString);
+//
+//    }
 }

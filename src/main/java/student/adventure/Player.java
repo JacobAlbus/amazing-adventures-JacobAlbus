@@ -1,19 +1,36 @@
 package student.adventure;
 
+import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class Player {
-    private int[] position;
-    private ArrayList<String> items;
+    private int[] position = {1, 1};
+    private ArrayList<String> items = new ArrayList<>();;
     private String name;
+    private GameBoard board;
 
     public Player(String playerName){
         this.name = playerName;
-        position = new int[2];
-        items = new ArrayList<>();
+
+        try {
+            Gson gson = new Gson();
+            Reader reader = Files.newBufferedReader(Paths.get("src/main/java/student/adventure/Rooms.json"));
+
+            board = gson.fromJson(reader, GameBoard.class);
+            reader.close();
+        } catch (NullPointerException e) {
+            System.out.println("Null value passed");
+        } catch (IOException e) {
+            System.out.println("ERORR: File not found!");
+        }
     }
 
     public int[] getPosition(){
@@ -37,19 +54,11 @@ public class Player {
         if(room.getAvailableItems().contains(item)){
             items.add(item);
             room.getAvailableItems().remove(item);
-            System.out.print("> ");
+            printInputPrompt();
         } else{
             System.out.println("It seems like the room doesn't have that item");
-            System.out.print("> ");
+            printInputPrompt();
         }
-    }
-
-    /**
-     * Prints out all the items currently in player's inventory
-     */
-    public void checkInventory(){
-        System.out.println(name + "'s Inventory: " + items);
-        System.out.print("> ");
     }
 
     /**
@@ -62,13 +71,13 @@ public class Player {
         if(items.contains(item) && !room.getAvailableItems().contains(item)){
             items.remove(item);
             room.addAvailableItem(item);
-            System.out.print("> ");
+            printInputPrompt();
         } else if(room.getAvailableItems().contains(item)){
             System.out.println("Can't drop the item, it's already in the room");
-            System.out.print("> ");
+            printInputPrompt();
         } else{
             System.out.println("It seems like you don't have that item");
-            System.out.print("> ");
+            printInputPrompt();
         }
 
     }
@@ -78,11 +87,10 @@ public class Player {
      * @param item item that the player will use
      */
     public void useItem(Room room, String item){
-        //ArrayList<String> itemsInGame = new ArrayList<>(Arrays.asList("torch"));
         if(items.contains(item)){
             switch(item){
                 case "torch":
-                    int[] torchCoords = {0, 0};
+                    int[] torchCoords = board.getRoom(0).getRoomCoordinates();
                     if(isRoomCorrect(room, torchCoords)){
                         room.setPrimaryDescription(room.getSecondaryDescription());
                         room.addAvailableItem(room.getUnavailbleItems().get(0));
@@ -90,7 +98,7 @@ public class Player {
                     }
                     break;
                 case "key":
-                    int[] keyCoords = {1, 1};
+                    int[] keyCoords = board.getRoom(2).getRoomCoordinates();
                     if(isRoomCorrect(room, keyCoords)){
                         room.setPrimaryDescription(room.getSecondaryDescription());
                         room.addAvailableDoors(room.getUnavailableDoors().get(0));
@@ -99,7 +107,7 @@ public class Player {
                     }
                     break;
                 case "calculator":
-                    int[] calcCoords = {2, 2};
+                    int[] calcCoords = board.getRoom(5).getRoomCoordinates();
                     if(isRoomCorrect(room, calcCoords)){
                         if(didPlayerAceMathTest()){
                             room.setPrimaryDescription(room.getSecondaryDescription());
@@ -112,7 +120,7 @@ public class Player {
                     }
                     break;
                 case "lighter":
-                    int[] lighterCoords = {4, 2};
+                    int[] lighterCoords = board.getRoom(8).getRoomCoordinates();
                     if(isRoomCorrect(room, lighterCoords)){
                         room.setPrimaryDescription(room.getSecondaryDescription());
                         room.addAvailableDoors(room.getUnavailableDoors().get(0));
@@ -122,13 +130,13 @@ public class Player {
                     break;
                 default:
                     System.out.println("Sorry but that item has no use");
-                    System.out.print("> ");
+                    printInputPrompt();
                     break;
             }
 
         } else {
             System.out.println("You do not have this item");
-            System.out.print("> ");
+            printInputPrompt();
         }
     }
 
@@ -158,25 +166,26 @@ public class Player {
             }
         } else{
             System.out.println("You cannot go in that direction");
-            System.out.print("> ");
+            printInputPrompt();
         }
 
     }
 
     /**
-     * Checks if player is using item in correct room
-     * called in useItem
-     * @param room room player is currently in
-     * @param coords coords the player should be using the item in
-     * @return true if player is in correct room
+     * Prints out all the items currently in player's inventory
      */
+    public void checkInventory(){
+        System.out.println(name + "'s Inventory: " + items);
+        printInputPrompt();
+    }
+
     private boolean isRoomCorrect(Room room, int[] coords){
         boolean isRoomCorrect = false;
         if(Arrays.equals(room.getRoomCoordinates(), coords)){
             isRoomCorrect = true;
         } else {
             System.out.println("It appears that the item has no use here");
-            System.out.print("> ");
+            printInputPrompt();
         }
 
         return isRoomCorrect;
@@ -232,8 +241,7 @@ public class Player {
         }
     }
 
-    public static void printInputPrompt(){
+    private void printInputPrompt(){
         System.out.print("> ");
     }
-
 }

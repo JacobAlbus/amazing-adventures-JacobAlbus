@@ -52,7 +52,7 @@ public class GameEngine {
     public void gameLoop(){
         Room room = findPlayerCurrentRoom();
         printRoomMessage(room);
-        int[] winRoom = {4, 0};
+        int[] winRoom = board.getRoom(9).getRoomCoordinates();
 
         while(true){
             room = findPlayerCurrentRoom();
@@ -81,7 +81,7 @@ public class GameEngine {
      */
     public ArrayList<String> filterInputs(){
         ArrayList<String> actions = new ArrayList<>(Arrays.asList("use", "take", "drop", "go", "check",
-                                                                  "examine", "help", "exit", "quit"));
+                                                                  "examine", "help", "map", "exit", "quit"));
         ArrayList<String> processedInputs = new ArrayList<>();
 
         String[] playerInputs = gameMaster.nextLine().toLowerCase().split(" ");
@@ -134,6 +134,9 @@ public class GameEngine {
             case "check":
                 player.checkInventory();
                 break;
+            case "map":
+                printOutMap();
+                break;
             case "help":
                 printHelpCommands();
                 break;
@@ -176,6 +179,7 @@ public class GameEngine {
         for(int i = 0; i < board.getBoardSize(); i++){
             Room room = board.getRoom(i);
             if(Arrays.equals(player.getPosition(), room.getRoomCoordinates())){
+                room.setHasPlayerBeenHere(true);
                 return room;
             }
         }
@@ -201,7 +205,82 @@ public class GameEngine {
         printInputPrompt();
     }
 
-    public static void printInputPrompt(){
+    /**
+     * Prints out a map of all rooms player has been in
+     */
+    public void printOutMap(){
+        String[][] mapArray = createMapArray();
+
+        // converts 2d String array into a single String
+        StringBuilder mapString = new StringBuilder();
+        for(int j = mapArray.length - 1; j >= 0; j--){
+            for(int i = 0; i < mapArray[0].length; i++){
+                mapString.append(mapArray[i][j]);
+            }
+            mapString.append("\n");
+        }
+
+        System.out.println(mapString);
+        printInputPrompt();
+    }
+
+    /**
+     * Gets dimensions of map based on which rooms player has been to
+     * called in createMapArray
+     * @return int array containing vertical and horizontal map dimensions
+     */
+    private int[] findMapDimensions(){
+        int mapSizeX = 0;
+        int mapSizeY = 0;
+
+        // get dimensions of map size
+        for(int i = 0; i < board.getBoardSize(); i++) {
+            Room room = board.getRoom(i);
+
+            if(room.getHasPlayerBeenHere()) {
+                int[] roomCoordinates = room.getRoomCoordinates();
+                if(roomCoordinates[0] > mapSizeX) {
+                    mapSizeX = roomCoordinates[0];
+                }
+                if(roomCoordinates[1] > mapSizeY) {
+                    mapSizeY = roomCoordinates[1];
+                }
+            }
+        }
+        int[] temp = {mapSizeX, mapSizeY};
+        return temp;
+    }
+
+    /**
+     * creates a map array based on the rooms player has been to
+     * called in printOutMap
+     * @return 2d String array containing a map of all the rooms player has been to
+     */
+    private String[][] createMapArray(){
+        int[] mapDimensions = findMapDimensions();
+        // initialize mapArray with String denoting no room
+        String[][] mapArray = new String[mapDimensions[0]][mapDimensions[1]];
+        for(int i = 0; i < mapArray.length; i++){
+            for(int j = 0; j < mapArray[0].length; j++){
+                mapArray[i][j] = "0";
+            }
+        }
+
+        // populate map with rooms
+        for(int i = 0; i < board.getBoardSize(); i++) {
+            Room room = board.getRoom(i);
+
+            if(room.getHasPlayerBeenHere()) {
+                int x = room.getRoomCoordinates()[0] - 1;
+                int y = room.getRoomCoordinates()[1] - 1;
+                mapArray[x][y] = "1";
+            }
+        }
+
+        return mapArray;
+    }
+
+    private static void printInputPrompt(){
         System.out.print("> ");
     }
 }

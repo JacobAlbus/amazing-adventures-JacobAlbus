@@ -1,19 +1,16 @@
 package student.adventure;
 
-import static org.junit.Assert.assertEquals;
-
 import com.google.gson.Gson;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.Reader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.regex.Pattern;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class AdventureTest {
     GameBoard board;
@@ -39,7 +36,7 @@ public class AdventureTest {
     }
 
     @Test
-    public void testProcessInputsExamie(){
+    public void testProcessInputsExamine(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
 
@@ -52,8 +49,9 @@ public class AdventureTest {
         System.out.flush();
         System.setOut(old);
 
-        String printedString = baos.toString().split("'")[0];
-        assertEquals("You", printedString);
+        String printedString = baos.toString().split(">")[0];
+        assertEquals("You're in a dark room with one visible door." +
+                "\r\nDirection: east \r\nItems:  \r\n", printedString);
     }
 
     @Test
@@ -199,6 +197,41 @@ public class AdventureTest {
 
         String printedString = baos.toString().split(">")[0];
         assertEquals("You're in a dark room with one visible door." +
-                                "\r\nDirection: east \r\nItems: \r\n", printedString);
+                                "\r\nDirection: east \r\nItems:  \r\n", printedString);
     }
+
+    @Test
+    public void testFindPlayerCurrentRoom(){
+        Room room = engine.findPlayerCurrentRoom();
+
+        assertArrayEquals(room.getRoomCoordinates(), player.getPosition());
+    }
+
+    @Test
+    public void testPrintOutMap(){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+
+        PrintStream old = System.out;
+
+        System.setOut(ps);
+
+        engine.printOutMap();
+
+        System.out.flush();
+        System.setOut(old);
+
+        String printedString = baos.toString();
+        assertEquals("1\n\r\n> ", printedString);
+
+    }
+
+//    @Test
+//    public void testFilterInputs(){
+//        InputStream sysInBackup = System.in; // backup System.in to restore it later
+//        ByteArrayInputStream in = new ByteArrayInputStream("foo bar".getBytes());
+//        System.setIn(in);
+//        ArrayList<String> inputs = engine.filterInputs();
+//        System.out.println(inputs);
+//    }
 }

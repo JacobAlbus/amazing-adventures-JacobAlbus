@@ -10,10 +10,11 @@ public class Room {
     private ArrayList<String> unavailableItems;
     private String primaryDescription;
     private String secondaryDescription;
+    private Boolean hasPlayerBeenHere;
 
     public Room(int[] roomCoordinates, ArrayList<String> availableDoors, ArrayList<String> unavailableDoors,
                 ArrayList<String> availableItems, ArrayList<String> unavailableItems, String primaryDescription,
-                String secondaryDescription){
+                String secondaryDescription, Boolean hasPlayerBeenHere){
         this.roomCoordinates = roomCoordinates;
         this.availableDoors = availableDoors;
         this.unavailableDoors = unavailableDoors;
@@ -21,6 +22,7 @@ public class Room {
         this.unavailableItems = unavailableItems;
         this.primaryDescription = primaryDescription;
         this.secondaryDescription = secondaryDescription;
+        this.hasPlayerBeenHere = hasPlayerBeenHere;
     }
 
     public int[] getRoomCoordinates(){
@@ -65,6 +67,14 @@ public class Room {
 
     public String getSecondaryDescription(){
         return secondaryDescription;
+    }
+
+    public Boolean getHasPlayerBeenHere(){
+        return hasPlayerBeenHere;
+    }
+
+    public void setHasPlayerBeenHere(Boolean bool){
+        hasPlayerBeenHere = bool;
     }
 
 }

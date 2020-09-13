@@ -1,25 +1,31 @@
 package student.adventure;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 import com.google.gson.Gson;
 import java.io.Reader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class AdventureTest {
-    @Test
+    GameBoard board;
+    Player player;
+
+    @Before
     public void setUp() {
+        player = new Player("bob");
+
         try {
             Gson gson = new Gson();
             Reader reader = Files.newBufferedReader(Paths.get("src/main/java/student/adventure/Rooms.json"));
 
-            GameBoard board = gson.fromJson(reader, GameBoard.class);
+            board = gson.fromJson(reader, GameBoard.class);
             reader.close();
         } catch (NullPointerException e) {
             System.out.println("Null value passed");
@@ -28,25 +34,9 @@ public class AdventureTest {
         }
     }
 
-
     @Test
-    public void testPlayerUpdatePosition(){
-        Player player = new Player("bob");
+    public void testFilterInputs(){
 
-        player.updatePosition("east");
-        int [] position = player.getPosition();
-        int[] arr = {1, 0};
-
-        for(int i = 0; i < arr.length; i++){
-            assertEquals(arr[i], position[i]);
-        }
-    }
-
-    @Test
-    public void testUpdatePlayerRoom(){
-        Player player = new Player("bob");
-
-        player.updatePosition("east");
     }
 
 }

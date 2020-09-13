@@ -3,22 +3,28 @@
     "roomCoordinates": [0, 0],
     "availableDoors": ["east"],
     "unavailableDoors":  [],
-    "items":  [],
-    "description": "You're in a dark room with one visible door."
+    "availableItems":  [],
+    "unavailableItems": ["key"],
+    "primaryDescription": "You're in a dark room with one visible door.",
+    "secondaryDescription:": "After using the torch, you see a sparkle in one of the cracks. After investigating, you find a key"
   },
   {
     "roomCoordinates": [1, 0],
     "availableDoors": ["west", "north"],
     "unavailableDoors":  [],
-    "items":  ["torch"],
-    "description": "Doesn't seem too different from the last room."
+    "availableItems":  ["torch"],
+    "unavailableItems": [],
+    "primaryDescription": "This room doesn't look too different than the last",
+    "secondaryDescription:": "The room is now lit up, and you hear all sorts of bugs and critters scatter into the cracks"
   },
   {
     "roomCoordinates": [1, 1],
     "availableDoors": ["south"],
     "unavailableDoors":  ["north"],
-    "items":  [],
-    "description": "There's a door but it's locked."
+    "availableItems":  ["torch"],
+    "unavailableItems": [],
+    "primaryDescription": "There's a door at the north end of the room, but it's locked.",
+    "secondaryDescription:": "The room is now lit up, and you hear all sorts of bugs and critters scatter into the cracks"
   }
 ]
 }

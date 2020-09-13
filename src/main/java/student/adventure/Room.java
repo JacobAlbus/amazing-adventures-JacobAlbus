@@ -6,24 +6,25 @@ public class Room {
     private int[] roomCoordinates;
     private ArrayList<String> availableDoors;
     private ArrayList<String> unavailableDoors;
-    private ArrayList<String> items;
-    private String description;
+    private ArrayList<String> availableItems;
+    private ArrayList<String> unavailableItems;
+    private String primaryDescription;
+    private String secondaryDescription;
 
-    public Room(int[] roomCoordinates, ArrayList<String> availableDoors,
-                ArrayList<String> unavailableDoors, ArrayList<String> items, String description){
+    public Room(int[] roomCoordinates, ArrayList<String> availableDoors, ArrayList<String> unavailableDoors,
+                ArrayList<String> availableItems, ArrayList<String> unavailableItems, String primaryDescription,
+                String secondaryDescription){
         this.roomCoordinates = roomCoordinates;
         this.availableDoors = availableDoors;
         this.unavailableDoors = unavailableDoors;
-        this.items = items;
-        this.description = description;
+        this.availableItems = availableItems;
+        this.unavailableItems = unavailableItems;
+        this.primaryDescription = primaryDescription;
+        this.secondaryDescription = secondaryDescription;
     }
 
     public int[] getRoomCoordinates(){
         return roomCoordinates;
-    }
-
-    public void setRoomCoordinates(int[] roomCoordinates){
-        this.roomCoordinates = roomCoordinates;
     }
 
     public ArrayList<String> getAvailableDoors(){
@@ -42,20 +43,28 @@ public class Room {
         this.unavailableDoors = doors;
     }
 
-    public ArrayList<String> getItems(){
-        return items;
+    public ArrayList<String> getAvailableItems(){
+        return availableItems;
     }
 
-    public void setItems(ArrayList<String> items){
-        this.items = items;
+    public void addAvailableItem(String item){
+        availableItems.add(item);
     }
 
-    public String getDescription(){
-        return description;
+    public ArrayList<String> getUnavailbleItems(){
+        return unavailableItems;
     }
 
-    public void setDescription(String description){
-        this.description = description;
+    public void addUnavailableItem(String item){
+        unavailableItems.add(item);
+    }
+
+    public String getPrimaryDescription(){
+        return primaryDescription;
+    }
+
+    public String getSecondaryyDescription(){
+        return secondaryDescription;
     }
 
 }

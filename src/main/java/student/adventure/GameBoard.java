@@ -1,7 +1,6 @@
 package student.adventure;
 
 import java.util.List;
-import java.util.ArrayList;
 
 public class GameBoard {
     protected List<Room> rooms;

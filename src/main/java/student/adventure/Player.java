@@ -3,6 +3,7 @@ package student.adventure;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Scanner;
 
 public class Player {
     private int[] position;
@@ -17,6 +18,10 @@ public class Player {
 
     public int[] getPosition(){
         return position;
+    }
+
+    public void setPosition(int[] position){
+        this.position = position;
     }
 
     public ArrayList<String> getItems(){
@@ -89,6 +94,29 @@ public class Player {
                     if(isRoomCorrect(room, keyCoords)){
                         room.setPrimaryDescription(room.getSecondaryDescription());
                         room.addAvailableDoors(room.getUnavailableDoors().get(0));
+                        room.removeUnavailableDoors(room.getUnavailableDoors().get(0));
+                        items.remove(item);
+                    }
+                    break;
+                case "calculator":
+                    int[] calcCoords = {2, 2};
+                    if(isRoomCorrect(room, calcCoords)){
+                        if(didPlayerAceMathTest()){
+                            room.setPrimaryDescription(room.getSecondaryDescription());
+                            room.addAvailableDoors(room.getUnavailableDoors().get(0));
+                            room.removeUnavailableDoors(room.getUnavailableDoors().get(0));
+                            items.remove(item);
+                        } else{
+                            System.out.println("Better try again!");
+                        }
+                    }
+                    break;
+                case "lighter":
+                    int[] lighterCoords = {4, 2};
+                    if(isRoomCorrect(room, lighterCoords)){
+                        room.setPrimaryDescription(room.getSecondaryDescription());
+                        room.addAvailableDoors(room.getUnavailableDoors().get(0));
+                        room.removeUnavailableDoors(room.getUnavailableDoors().get(0));
                         items.remove(item);
                     }
                     break;
@@ -137,6 +165,7 @@ public class Player {
 
     /**
      * Checks if player is using item in correct room
+     * called in useItem
      * @param room room player is currently in
      * @param coords coords the player should be using the item in
      * @return true if player is in correct room
@@ -146,11 +175,65 @@ public class Player {
         if(Arrays.equals(room.getRoomCoordinates(), coords)){
             isRoomCorrect = true;
         } else {
-            System.out.println("Sorry but you can't use that item here");
+            System.out.println("It appears that the item has no use here");
             System.out.print("> ");
         }
 
         return isRoomCorrect;
+    }
+
+    /**
+     * Simulates a math test with basic problems; returns boolean depending on whether or not player passes test
+     * called in useItem for calculator
+     * @return boolean representing whether or not player passed test
+     */
+    private boolean didPlayerAceMathTest(){
+        int numCorrect = 0;
+
+        System.out.println("You have begun the eternal math test, pick your answers wisely!");
+
+        numCorrect += this.mathQuestion("What is the product of the squares of four and two", "64");
+        numCorrect += this.mathQuestion("Give me pi to the first 3 digits", "3.14");
+        numCorrect += this.mathQuestion("What is the standard representation " +
+                                                "for the square root of negative one", "i");
+        numCorrect += this.mathQuestion("What is the cube of the sixth element " +
+                                                "in the set of all natural numbers", "216");
+        numCorrect += this.mathQuestion("What is the factorial of 0", "1");
+
+        if(numCorrect >= 4){
+            System.out.println("Congratulations, you have passed the test");
+            return true;
+        } else {
+            System.out.println("You failed stupid, try again");
+            return false;
+        }
+
+    }
+
+    /**
+     * Asks player a math question, takes input, and determines if it's correct
+     * called in didPlayerAceMathTest
+     * @param question the question being asked of the player
+     * @param answer correct answer to question
+     * @return 1 if player is right, 0 otherwise
+     */
+    private int mathQuestion(String question, String answer){
+        Scanner mathTestInput = new Scanner(System.in);
+        System.out.println(question);
+        printInputPrompt();
+
+        String input = mathTestInput.nextLine().trim();
+        if(input.equals(answer)){
+            System.out.println("Correct");
+            return 1;
+        } else {
+            System.out.println("Wrong");
+            return 0;
+        }
+    }
+
+    public static void printInputPrompt(){
+        System.out.print("> ");
     }
 
 }

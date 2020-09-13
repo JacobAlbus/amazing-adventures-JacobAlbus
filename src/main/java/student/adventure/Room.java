@@ -55,10 +55,6 @@ public class Room {
         return unavailableItems;
     }
 
-    public void addUnavailableItem(String item){
-        unavailableItems.add(item);
-    }
-
     public String getPrimaryDescription(){
         return primaryDescription;
     }

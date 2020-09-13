@@ -5,13 +5,11 @@ import static org.junit.Assert.assertEquals;
 
 import com.google.gson.Gson;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.Reader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -157,4 +155,32 @@ public class PlayerTests {
         assertEquals(" Can't drop the item, it's already in the room\r\n", printedString);
     }
 
+    @Test
+    public void testPlayerMathTest(){
+        player.takeItem(board.getRoom(6), "calculator");
+        player.useItem(board.getRoom(5), "calculator");
+
+        InputStream stdin = System.in;
+        ByteArrayInputStream in = new ByteArrayInputStream("64".getBytes());
+        System.setIn(in);
+        Scanner scanner = new Scanner(System.in);
+        System.setIn(stdin);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+
+        PrintStream old = System.out;
+
+        System.setOut(ps);
+
+        System.setOut(ps);
+
+
+        System.out.flush();
+        System.setOut(old);
+
+        String printedString = baos.toString();
+        assertEquals(" Can't drop the item, it's already in the room\r\n", printedString);
+
+    }
 }

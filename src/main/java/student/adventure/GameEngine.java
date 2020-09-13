@@ -52,9 +52,15 @@ public class GameEngine {
     public void gameLoop(){
         Room room = findPlayerCurrentRoom();
         printRoomMessage(room);
+        int[] winRoom = {4, 0};
 
         while(true){
             room = findPlayerCurrentRoom();
+            // message for when player enters into the final Room
+            if(Arrays.equals(room.getRoomCoordinates(), winRoom)){
+                System.out.println("You win! Play gain to venture back into your room");
+                break;
+            }
 
             ArrayList<String> inputs = filterInputs();
             String action = inputs.get(0);
@@ -177,6 +183,7 @@ public class GameEngine {
         System.out.println("It seems you've wandered off the path of destiny. " +
                             "You have been returned to the first room.");
         printInputPrompt();
+        player.setPosition(board.getRoom(0).getRoomCoordinates());
         return board.getRoom(0);
     }
 
@@ -194,7 +201,7 @@ public class GameEngine {
         printInputPrompt();
     }
 
-    public static void  printInputPrompt(){
+    public static void printInputPrompt(){
         System.out.print("> ");
     }
 }

@@ -1,5 +1,6 @@
+package student.adventure;
+
 import com.google.gson.Gson;
-import student.adventure.*;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -16,16 +17,39 @@ public class GameEngine {
     private static Scanner gameMaster = new Scanner(System.in);
 
     public static void main(String[] args) {
-        GameEngine engine = new GameEngine();
+        System.out.println("Hello player! What would you like to name your adventurer?");
+        printInputPrompt();
+        String name = gameMaster.nextLine();
+        System.out.println(".\n" + ".\n" + ".\n.");
+
+        GameEngine engine = new GameEngine(name);
+        engine.gameLoop();
+    }
+
+    /**
+     * Initializes Player and GameBoard object
+     */
+    public GameEngine(String name){
+        player = new Player(name);
+
+        try {
+            Gson gson = new Gson();
+            Reader reader = Files.newBufferedReader(Paths.get("src/main/java/student/adventure/Rooms.json"));
+
+            board = gson.fromJson(reader, GameBoard.class);
+            reader.close();
+        } catch (NullPointerException e) {
+            System.out.println("Null value passed");
+        } catch (IOException e) {
+            System.out.println("ERORR: File not found!");
+        }
     }
 
     /**
      * Contains main loop for game: prompts player for input then filters and
      * processes input to figure out what player wants to do
      */
-    public GameEngine(){
-        loadInGameData();
-
+    public void gameLoop(){
         Room room = findPlayerCurrentRoom();
         printRoomMessage(room);
 
@@ -41,30 +65,6 @@ public class GameEngine {
             }
 
             processInputs(room, action, noun);
-        }
-    }
-
-    /**
-     * Initializes player and board object
-     */
-    public void loadInGameData(){
-        System.out.println("Hello player! What would you like to name your adventurer?");
-        printInputPrompt();
-        String name = gameMaster.nextLine();
-        player = new Player(name);
-
-        System.out.println(".\n" + ".\n" + ".\n.");
-
-        try {
-            Gson gson = new Gson();
-            Reader reader = Files.newBufferedReader(Paths.get("src/main/java/student/adventure/Rooms.json"));
-
-            board = gson.fromJson(reader, GameBoard.class);
-            reader.close();
-        } catch (NullPointerException e) {
-            System.out.println("Null value passed");
-        } catch (IOException e) {
-            System.out.println("ERORR: File not found!");
         }
     }
 
@@ -180,7 +180,7 @@ public class GameEngine {
     }
 
     /**
-     * Prints a list of commands recognized by GameEngine
+     * Prints a list of commands recognized by student.adventure.GameEngine
      */
     public void printHelpCommands(){
         System.out.println("Input go + 'direction' (east, west, north, south) to through corresponding direction \n" +

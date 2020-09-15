@@ -3,7 +3,7 @@ package student.adventure;
 import java.util.ArrayList;
 
 public class Room {
-    private int[] roomCoordinates;
+    private final int[] roomCoordinates;
     private ArrayList<String> availableDoors;
     private ArrayList<String> unavailableDoors;
     private ArrayList<String> availableItems;
@@ -75,6 +75,30 @@ public class Room {
 
     public void setHasPlayerBeenHere(Boolean bool){
         hasPlayerBeenHere = bool;
+    }
+
+    /**
+     * Prints a formatted message depending on which room player is in
+     */
+    public void printRoomMessage(){
+        System.out.println(primaryDescription);
+
+        StringBuilder doors = new StringBuilder();
+        for(String direction: availableDoors){
+            doors.append(direction);
+            doors.append(" ");
+        }
+
+        System.out.println("Direction: " + doors.toString());
+
+        StringBuilder items = new StringBuilder();
+        for(String item: availableItems){
+            items.append(item);
+            items.append(" ");
+        }
+
+        System.out.println("Items: " + items.toString());
+        System.out.print("> ");
     }
 
 }

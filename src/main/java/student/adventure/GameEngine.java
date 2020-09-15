@@ -12,36 +12,38 @@ import java.util.Collections;
 import java.util.Scanner;
 
 public class GameEngine {
-    private static GameBoard board;
-    private static Player player;
+    // made protected instead of static for testing purposes
+    protected GameBoard board;
+    protected Player player;
     private static Scanner gameMaster = new Scanner(System.in);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        // Scanner prompt for name moved to main method for testing purposes
         System.out.println("Hello player! What would you like to name your adventurer?");
         printInputPrompt();
         String name = gameMaster.nextLine();
         System.out.println(".\n" + ".\n" + ".\n.");
 
-        GameEngine engine = new GameEngine(name);
+        GameEngine engine = new GameEngine("src/main/java/resources/Rooms.json", name);
         engine.gameLoop();
     }
 
     /**
      * Initializes Player and GameBoard object
      */
-    public GameEngine(String name){
+    public GameEngine(String filePath, String name) throws IOException {
         player = new Player(name);
 
         try {
             Gson gson = new Gson();
-            Reader reader = Files.newBufferedReader(Paths.get("src/main/java/student/adventure/Rooms.json"));
+            Reader reader = Files.newBufferedReader(Paths.get(filePath));
 
             board = gson.fromJson(reader, GameBoard.class);
             reader.close();
         } catch (NullPointerException e) {
-            System.out.println("Null value passed");
+            throw new NullPointerException("The json file passed is null");
         } catch (IOException e) {
-            System.out.println("ERORR: File not found!");
+            throw new IOException("The specified file does not exist");
         }
     }
 
@@ -51,14 +53,14 @@ public class GameEngine {
      */
     public void gameLoop(){
         Room room = findPlayerCurrentRoom();
-        printRoomMessage(room);
-        int[] winRoom = board.getRoom(9).getRoomCoordinates();
+        room.printRoomMessage();
+        int[] winRoom = board.getRoom(10).getRoomCoordinates();
 
         while(true){
             room = findPlayerCurrentRoom();
-            // message for when player enters into the final Room
+            // message for when player enters the final/winners Room
             if(Arrays.equals(room.getRoomCoordinates(), winRoom)){
-                System.out.println("You win! Play gain to venture back into your room");
+                System.out.println("You win! Play again to venture back into your dorm");
                 break;
             }
 
@@ -114,7 +116,7 @@ public class GameEngine {
     public void processInputs(Room room, String action, String noun){
         switch(action){
             case "examine":
-                printRoomMessage(room);
+                room.printRoomMessage();
                 break;
             case "take":
                 player.takeItem(room, noun);
@@ -124,12 +126,11 @@ public class GameEngine {
                 break;
             case "use":
                 player.useItem(room, noun);
-                printRoomMessage(room);
                 break;
             case "go":
                 player.updatePosition(room, noun);
                 room = findPlayerCurrentRoom();
-                printRoomMessage(room);
+                room.printRoomMessage();
                 break;
             case "check":
                 player.checkInventory();
@@ -144,31 +145,6 @@ public class GameEngine {
                 System.out.println("I couldn't understand that command. Input 'help' to see list of commands");
                 printInputPrompt();
         }
-    }
-
-    /**
-     * Prints a formatted message depending on which room player is in
-     * @param room the Room object player is currently in
-     */
-    public void printRoomMessage(Room room){
-        System.out.println(room.getPrimaryDescription());
-
-        StringBuilder availableDoors = new StringBuilder();
-        for(String direction: room.getAvailableDoors()){
-            availableDoors.append(direction);
-            availableDoors.append(" ");
-        }
-
-        System.out.println("Direction: " + availableDoors.toString());
-
-        StringBuilder items = new StringBuilder();
-        for(String item: room.getAvailableItems()){
-            items.append(item);
-            items.append(" ");
-        }
-
-        System.out.println("Items: " + items.toString());
-        printInputPrompt();
     }
 
     /**
@@ -247,8 +223,8 @@ public class GameEngine {
                 }
             }
         }
-        int[] temp = {mapSizeX, mapSizeY};
-        return temp;
+        int[] mapDimensions = {mapSizeX, mapSizeY};
+        return mapDimensions;
     }
 
     /**

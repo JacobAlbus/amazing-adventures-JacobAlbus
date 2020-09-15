@@ -43,7 +43,7 @@
     "roomCoordinates" : [1, 3],
     "availableDoors" : ["east"],
     "unavailableDoors" :  [""],
-    "availableItems" :  [""],
+    "availableItems" :  ["knife"],
     "unavailableItems" : [""],
     "primaryDescription" : "Doesn't seem to be anything in here, probably a dead end",
     "secondaryDescription" : "",
@@ -81,7 +81,7 @@
   },
   {
     "roomCoordinates" : [5, 3],
-    "availableDoors" : ["north"],
+    "availableDoors" : [""],
     "unavailableDoors" :  ["south"],
     "availableItems" :  [""],
     "unavailableItems" : [""],
@@ -92,7 +92,7 @@
   {
     "roomCoordinates" : [5, 2],
     "availableDoors" : ["south"],
-    "unavailableDoors" :  ["lighter"],
+    "unavailableDoors" :  [""],
     "availableItems" :  [""],
     "unavailableItems" : [""],
     "primaryDescription" : "The exit is right there at the other end...MAKE A RUN FOR IT!!!",

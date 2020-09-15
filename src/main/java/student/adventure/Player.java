@@ -8,28 +8,27 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Scanner;
 
 public class Player {
     private int[] position = {1, 1};
-    private ArrayList<String> items = new ArrayList<>();;
+    private ArrayList<String> items = new ArrayList<>();
     private String name;
     private GameBoard board;
 
-    public Player(String playerName){
+    public Player(String playerName) throws IOException {
         this.name = playerName;
 
         try {
             Gson gson = new Gson();
-            Reader reader = Files.newBufferedReader(Paths.get("src/main/java/student/adventure/Rooms.json"));
+            Reader reader = Files.newBufferedReader(Paths.get("src/main/java/resources/Rooms.json"));
 
             board = gson.fromJson(reader, GameBoard.class);
             reader.close();
         } catch (NullPointerException e) {
-            System.out.println("Null value passed");
+            throw new NullPointerException("The json file passed is null");
         } catch (IOException e) {
-            System.out.println("ERORR: File not found!");
+            throw new IOException("The specified file does not exist");
         }
     }
 
@@ -91,29 +90,32 @@ public class Player {
             switch(item){
                 case "torch":
                     int[] torchCoords = board.getRoom(0).getRoomCoordinates();
-                    if(isRoomCorrect(room, torchCoords)){
+                    if(isRoomCorrectForItemUse(room, torchCoords)){
                         room.setPrimaryDescription(room.getSecondaryDescription());
                         room.addAvailableItem(room.getUnavailbleItems().get(0));
                         items.remove(item);
+                        room.printRoomMessage();
                     }
                     break;
                 case "key":
                     int[] keyCoords = board.getRoom(2).getRoomCoordinates();
-                    if(isRoomCorrect(room, keyCoords)){
+                    if(isRoomCorrectForItemUse(room, keyCoords)){
                         room.setPrimaryDescription(room.getSecondaryDescription());
                         room.addAvailableDoors(room.getUnavailableDoors().get(0));
                         room.removeUnavailableDoors(room.getUnavailableDoors().get(0));
                         items.remove(item);
+                        room.printRoomMessage();
                     }
                     break;
                 case "calculator":
                     int[] calcCoords = board.getRoom(5).getRoomCoordinates();
-                    if(isRoomCorrect(room, calcCoords)){
+                    if(isRoomCorrectForItemUse(room, calcCoords)){
                         if(didPlayerAceMathTest()){
                             room.setPrimaryDescription(room.getSecondaryDescription());
                             room.addAvailableDoors(room.getUnavailableDoors().get(0));
                             room.removeUnavailableDoors(room.getUnavailableDoors().get(0));
                             items.remove(item);
+                            room.printRoomMessage();
                         } else{
                             System.out.println("Better try again!");
                         }
@@ -121,11 +123,12 @@ public class Player {
                     break;
                 case "lighter":
                     int[] lighterCoords = board.getRoom(8).getRoomCoordinates();
-                    if(isRoomCorrect(room, lighterCoords)){
+                    if(isRoomCorrectForItemUse(room, lighterCoords)){
                         room.setPrimaryDescription(room.getSecondaryDescription());
                         room.addAvailableDoors(room.getUnavailableDoors().get(0));
                         room.removeUnavailableDoors(room.getUnavailableDoors().get(0));
                         items.remove(item);
+                        room.printRoomMessage();
                     }
                     break;
                 default:
@@ -179,7 +182,13 @@ public class Player {
         printInputPrompt();
     }
 
-    private boolean isRoomCorrect(Room room, int[] coords){
+    /**
+     * checks if the room item is used in, is a valid room for that item to be used
+     * @param room Room object in which useItem() is called in
+     * @param coords valid coords for item to be used in
+     * @return boolean depending on wheter or not room is valid for item use
+     */
+    private boolean isRoomCorrectForItemUse(Room room, int[] coords){
         boolean isRoomCorrect = false;
         if(Arrays.equals(room.getRoomCoordinates(), coords)){
             isRoomCorrect = true;
@@ -221,24 +230,26 @@ public class Player {
 
     /**
      * Asks player a math question, takes input, and determines if it's correct
-     * called in didPlayerAceMathTest
+     * called in didPlayerAceMathTest and made public for testing purposes
      * @param question the question being asked of the player
-     * @param answer correct answer to question
+     * @param correctAnswer correct answer to question
      * @return 1 if player is right, 0 otherwise
      */
-    private int mathQuestion(String question, String answer){
-        Scanner mathTestInput = new Scanner(System.in);
+    public int mathQuestion(String question, String correctAnswer){
         System.out.println(question);
         printInputPrompt();
 
-        String input = mathTestInput.nextLine().trim();
-        if(input.equals(answer)){
+        Scanner playerInput = new Scanner(System.in);
+        String playerAnswer = playerInput.nextLine();
+
+        if(playerAnswer.equals(correctAnswer)){
             System.out.println("Correct");
             return 1;
         } else {
             System.out.println("Wrong");
             return 0;
         }
+
     }
 
     private void printInputPrompt(){

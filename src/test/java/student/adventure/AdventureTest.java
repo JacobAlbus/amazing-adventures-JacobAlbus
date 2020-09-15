@@ -1,10 +1,6 @@
 package student.adventure;
 
-import com.google.gson.Gson;
-
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.regex.Pattern;
 
 import org.junit.Before;
@@ -13,26 +9,47 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class AdventureTest {
-    GameBoard board;
-    Player player;
     GameEngine engine;
 
     @Before
-    public void setUp() {
-        engine = new GameEngine("Bobby");
-        player = new Player("bob");
+    public void setUp() throws IOException {
+        engine = new GameEngine("src/main/java/resources/Rooms.json", "bob");
+    }
 
+    @Test
+    public void testReadInJsonNullFile() throws IOException {
         try {
-            Gson gson = new Gson();
-            Reader reader = Files.newBufferedReader(Paths.get("src/main/java/student/adventure/Rooms.json"));
-
-            board = gson.fromJson(reader, GameBoard.class);
-            reader.close();
+            new GameEngine("src/main/java/resources/RoomsNull.json", "bob");
         } catch (NullPointerException e) {
-            System.out.println("Null value passed");
-        } catch (IOException e) {
-            System.out.println("ERORR: File not found!");
+            assertEquals(e.getMessage(), "The json file passed is null");
         }
+    }
+
+    @Test
+    public void testReadInJsonFileNotFound(){
+        try {
+            new GameEngine("src/main/java/student/adventure/R.json", "bob");
+        } catch (IOException e) {
+            assertEquals(e.getMessage(), "The specified file does not exist");
+        }
+    }
+
+    @Test
+    public void testProcessInputsInvalidInput(){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+
+        PrintStream old = System.out;
+
+        System.setOut(ps);
+
+        engine.processInputs(engine.board.getRoom(0), "foo", "bar");
+
+        System.out.flush();
+        System.setOut(old);
+
+        String printedString = baos.toString().split(">")[0];
+        assertEquals("I couldn't understand that command. Input 'help' to see list of commands\r\n", printedString);
     }
 
     @Test
@@ -44,7 +61,7 @@ public class AdventureTest {
 
         System.setOut(ps);
 
-        engine.processInputs(board.getRoom(0), "examine", "foo");
+        engine.processInputs(engine.board.getRoom(0), "examine", "foo");
 
         System.out.flush();
         System.setOut(old);
@@ -63,7 +80,7 @@ public class AdventureTest {
 
         System.setOut(ps);
 
-        engine.processInputs(board.getRoom(0), "take", "foo");
+        engine.processInputs(engine.board.getRoom(0), "take", "foo");
 
         System.out.flush();
         System.setOut(old);
@@ -81,7 +98,7 @@ public class AdventureTest {
 
         System.setOut(ps);
 
-        engine.processInputs(board.getRoom(0), "drop", "foo");
+        engine.processInputs(engine.board.getRoom(0), "drop", "foo");
 
         System.out.flush();
         System.setOut(old);
@@ -99,7 +116,7 @@ public class AdventureTest {
 
         System.setOut(ps);
 
-        engine.processInputs(board.getRoom(0), "use", "foo");
+        engine.processInputs(engine.board.getRoom(0), "use", "foo");
 
         System.out.flush();
         System.setOut(old);
@@ -117,7 +134,7 @@ public class AdventureTest {
 
         System.setOut(ps);
 
-        engine.processInputs(board.getRoom(0), "go", "t");
+        engine.processInputs(engine.board.getRoom(0), "go", "t");
 
         System.out.flush();
         System.setOut(old);
@@ -135,13 +152,13 @@ public class AdventureTest {
 
         System.setOut(ps);
 
-        engine.processInputs(board.getRoom(0), "check", "foo");
+        engine.processInputs(engine.board.getRoom(0), "check", "foo");
 
         System.out.flush();
         System.setOut(old);
 
         String printedString = baos.toString().split(">")[0];
-        assertEquals("Bobby's Inventory: []\r\n", printedString);
+        assertEquals("bob's Inventory: []\r\n", printedString);
     }
 
     @Test
@@ -153,7 +170,7 @@ public class AdventureTest {
 
         System.setOut(ps);
 
-        engine.processInputs(board.getRoom(0), "help", "foo");
+        engine.processInputs(engine.board.getRoom(0), "help", "foo");
 
         System.out.flush();
         System.setOut(old);
@@ -171,7 +188,7 @@ public class AdventureTest {
 
         System.setOut(ps);
 
-        engine.processInputs(board.getRoom(0), "yuppie", "foo");
+        engine.processInputs(engine.board.getRoom(0), "yuppie", "foo");
 
         System.out.flush();
         System.setOut(old);
@@ -190,7 +207,7 @@ public class AdventureTest {
 
         System.setOut(ps);
 
-        engine.printRoomMessage(board.getRoom(0));
+        engine.board.getRoom(0).printRoomMessage();
 
         System.out.flush();
         System.setOut(old);
@@ -204,7 +221,33 @@ public class AdventureTest {
     public void testFindPlayerCurrentRoom(){
         Room room = engine.findPlayerCurrentRoom();
 
-        assertArrayEquals(room.getRoomCoordinates(), player.getPosition());
+        assertArrayEquals(room.getRoomCoordinates(), engine.player.getPosition());
+    }
+
+    @Test
+    public void testFindPlayerCurrentRoomNotFound(){
+        try{
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PrintStream ps = new PrintStream(baos);
+
+            PrintStream old = System.out;
+
+            System.setOut(ps);
+
+            GameEngine invalidJSONEngine = new GameEngine("src/main/java/student/resources/RoomsInvalidTesting.json",
+                                                      "bob");
+            invalidJSONEngine.player.updatePosition(invalidJSONEngine.board.getRoom(0), "east");
+
+            System.out.flush();
+            System.setOut(old);
+
+            String printedString = baos.toString().split(">")[0];
+            assertEquals("You do not have this item\r\n", printedString);
+        } catch (IOException e){
+            System.out.println("JSON not found");
+        }
+
+
     }
 
     @Test
@@ -216,6 +259,7 @@ public class AdventureTest {
 
         System.setOut(ps);
 
+
         engine.printOutMap();
 
         System.out.flush();
@@ -226,12 +270,44 @@ public class AdventureTest {
 
     }
 
-//    @Test
-//    public void testFilterInputs(){
-//        InputStream sysInBackup = System.in; // backup System.in to restore it later
-//        ByteArrayInputStream in = new ByteArrayInputStream("foo bar".getBytes());
-//        System.setIn(in);
-//        ArrayList<String> inputs = engine.filterInputs();
-//        System.out.println(inputs);
-//    }
+    @Test
+    public void testPlayerWins(){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+
+        PrintStream old = System.out;
+
+        System.setOut(ps);
+
+        engine.player.updatePosition(engine.board.getRoom(0), "east");
+        engine.player.takeItem(engine.board.getRoom(1), "torch");
+        engine.player.updatePosition(engine.board.getRoom(1), "west");
+        engine.player.useItem(engine.board.getRoom(0), "torch");
+        engine.player.takeItem(engine.board.getRoom(0), "key");
+        engine.player.updatePosition(engine.board.getRoom(0), "east");
+        engine.player.updatePosition(engine.board.getRoom(1), "north");
+        engine.player.useItem(engine.board.getRoom(2), "key");
+        engine.player.updatePosition(engine.board.getRoom(2), "north");
+        engine.player.updatePosition(engine.board.getRoom(3), "north");
+        engine.player.takeItem(engine.board.getRoom(6), "calculator");
+        engine.player.updatePosition(engine.board.getRoom(6), "south");
+        engine.player.updatePosition(engine.board.getRoom(3), "east");
+        engine.board.getRoom(5).addAvailableDoors("east");
+        engine.player.updatePosition(engine.board.getRoom(5), "east");
+        engine.player.takeItem(engine.board.getRoom(7), "lighter");
+        engine.player.updatePosition(engine.board.getRoom(7), "east");
+        engine.player.useItem(engine.board.getRoom(8), "lighter");
+        engine.player.updatePosition(engine.board.getRoom(8), "south");
+        engine.player.updatePosition(engine.board.getRoom(9), "south");
+        engine.processInputs(engine.findPlayerCurrentRoom(), "examine", "");
+
+        engine.gameLoop();
+        System.out.flush();
+        System.setOut(old);
+
+        String printedString = baos.toString().split(">")[9];
+        assertEquals(" You win! Play again to venture back into your dorm\r\n", printedString);
+
+    }
+
 }

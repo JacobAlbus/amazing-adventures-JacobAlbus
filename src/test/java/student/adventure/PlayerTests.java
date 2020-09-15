@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.*;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -250,7 +251,7 @@ public class PlayerTests {
 
         String description = engine.board.getRoom(0).getPrimaryDescription();
         assertEquals("After using the torch, you see a sparkle in one of the cracks. " +
-                             "After investigating, you see a key", description);
+                "After investigating, you see a key", description);
     }
 
     @Test
@@ -271,7 +272,7 @@ public class PlayerTests {
 
         String description = engine.board.getRoom(8).getPrimaryDescription();
         assertEquals("WOW, the smell of rotten eggs was actually a gas leak " +
-                             "and the lighter caused the room to combust. The south door was blown down", description);
+                "and the lighter caused the room to combust. The south door was blown down", description);
     }
 
     @Test
@@ -286,8 +287,14 @@ public class PlayerTests {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.player.takeItem(engine.board.getRoom(6), "calculator");
-        engine.player.useItem(engine.board.getRoom(5), "calculator");
+        try{
+            engine.player.takeItem(engine.board.getRoom(6), "calculator");
+            engine.player.useItem(engine.board.getRoom(5), "calculator");
+        } catch (NoSuchElementException e){
+            in = new ByteArrayInputStream("64".getBytes());
+            System.setIn(in);
+        }
+
 
         System.out.flush();
         System.setOut(old);

@@ -212,9 +212,9 @@ public class Player {
         numCorrect += this.mathQuestion("What is the product of the squares of four and two", "64");
         numCorrect += this.mathQuestion("Give me pi to the first 3 digits", "3.14");
         numCorrect += this.mathQuestion("What is the standard representation " +
-                                                "for the square root of negative one", "i");
+                "for the square root of negative one", "i");
         numCorrect += this.mathQuestion("What is the cube of the sixth element " +
-                                                "in the set of all natural numbers", "216");
+                "in the set of all natural numbers", "216");
         numCorrect += this.mathQuestion("What is the factorial of 0", "1");
 
         if(numCorrect >= 4){

@@ -152,8 +152,8 @@ public class GameEngine {
      * @return the Room object player is currently in
      */
     public Room findPlayerCurrentRoom(){
-        for(int i = 0; i < board.getBoardSize(); i++){
-            Room room = board.getRoom(i);
+        for(int roomIndex = 0; roomIndex < board.getBoardSize(); roomIndex++){
+            Room room = board.getRoom(roomIndex);
             if(Arrays.equals(player.getPosition(), room.getRoomCoordinates())){
                 room.setHasPlayerBeenHere(true);
                 return room;
@@ -189,9 +189,9 @@ public class GameEngine {
 
         // Converts 2d String array into a single String
         StringBuilder mapString = new StringBuilder();
-        for(int j = mapArray.length - 1; j >= 0; j--){
-            for(int i = 0; i < mapArray[0].length; i++){
-                mapString.append(mapArray[i][j]);
+        for(int columnIndex = mapArray[0].length - 1; columnIndex >= 0; columnIndex--){
+            for(int rowIndex = 0; rowIndex < mapArray.length; rowIndex++){
+                mapString.append(mapArray[rowIndex][columnIndex]);
             }
             mapString.append("\n");
         }
@@ -202,16 +202,15 @@ public class GameEngine {
 
     /**
      * Gets dimensions of map based on which rooms player has been to
-     * called in createMapArray
      * @return int array containing vertical and horizontal map dimensions
      */
     private int[] findMapDimensions(){
         int mapSizeX = 0;
         int mapSizeY = 0;
 
-        // Get dimensions of map size
-        for(int i = 0; i < board.getBoardSize(); i++) {
-            Room room = board.getRoom(i);
+        // Get dimensions of map size based on which rooms player has been to
+        for(int roomIndex = 0; roomIndex < board.getBoardSize(); roomIndex++) {
+            Room room = board.getRoom(roomIndex);
 
             if(room.getHasPlayerBeenHere()) {
                 int[] roomCoordinates = room.getRoomCoordinates();
@@ -234,17 +233,16 @@ public class GameEngine {
      */
     private String[][] createMapArray(){
         int[] mapDimensions = findMapDimensions();
-        // Initialize mapArray with String denoting no room
         String[][] mapArray = new String[mapDimensions[0]][mapDimensions[1]];
-        for(int i = 0; i < mapArray.length; i++){
-            for(int j = 0; j < mapArray[0].length; j++){
-                mapArray[i][j] = "0";
-            }
+
+        // Initialize mapArray with '0' denoting no room
+        for(String[] mapRow : mapArray){
+            Arrays.fill(mapRow, "0");
         }
 
-        // populate map with rooms
-        for(int i = 0; i < board.getBoardSize(); i++) {
-            Room room = board.getRoom(i);
+        // populate map with rooms with '1' being a room
+        for(int roomIndex = 0; roomIndex < board.getBoardSize(); roomIndex++) {
+            Room room = board.getRoom(roomIndex);
 
             if(room.getHasPlayerBeenHere()) {
                 int x = room.getRoomCoordinates()[0] - 1;

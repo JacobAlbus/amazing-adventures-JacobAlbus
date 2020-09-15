@@ -247,7 +247,7 @@ public class AdventureTest {
     }
 
     @Test
-    public void testPrintOutMap(){
+    public void testPrintOutSquareMap(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
 
@@ -255,15 +255,38 @@ public class AdventureTest {
 
         System.setOut(ps);
 
-
+        engine.player.updatePosition(engine.findPlayerCurrentRoom(), "east");
+        engine.player.updatePosition(engine.findPlayerCurrentRoom(), "north");
+        engine.player.updatePosition(engine.findPlayerCurrentRoom(), "north");
         engine.printOutMap();
 
         System.out.flush();
         System.setOut(old);
 
-        String printedString = baos.toString();
-        assertEquals("1\n\r\n> ", printedString);
+        String printedString = baos.toString().split(">")[1];
+        printedString = printedString.replace("\r", "").replace("\n", "");
+        assertEquals(" 0111", printedString);
+    }
 
+    @Test
+    public void testPrintOutRectangleMap(){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+
+        PrintStream old = System.out;
+
+        System.setOut(ps);
+
+        engine.player.updatePosition(engine.findPlayerCurrentRoom(), "east");
+        engine.player.updatePosition(engine.findPlayerCurrentRoom(), "east");
+        engine.printOutMap();
+
+        System.out.flush();
+        System.setOut(old);
+
+        String printedString = baos.toString().split(">")[1];
+        printedString = printedString.replace("\r", "").replace("\n", "");
+        assertEquals(" 11", printedString);
     }
 
     @Test

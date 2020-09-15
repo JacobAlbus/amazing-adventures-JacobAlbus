@@ -14,9 +14,6 @@ import org.junit.Test;
 public class PlayerTests {
     GameEngine engine;
 
-    /**
-     * Initializes GameBoard and Player objects for testing
-     */
     @Before
     public void setUp() throws IOException {
         engine = new GameEngine("src/main/java/resources/Rooms.json", "bob");
@@ -129,7 +126,7 @@ public class PlayerTests {
     }
 
     @Test
-    //code from here: https://stackoverflow.com/questions/8708342/redirect-console-output-to-string-in-java
+    // Code from here: https://stackoverflow.com/questions/8708342/redirect-console-output-to-string-in-java
     public void testPlayerTakeItemNotFoundInRoom(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
@@ -279,7 +276,7 @@ public class PlayerTests {
 
     @Test
     public void testPlayerUsesCalculator(){
-        // next two lines are from: https://bugsdb.com/_en/debug/09bdbc2d248d31d6785ba772ea8689cb
+        // Next two lines are from: https://bugsdb.com/_en/debug/09bdbc2d248d31d6785ba772ea8689cb
         ByteArrayInputStream in = new ByteArrayInputStream("64".getBytes());
         System.setIn(in);
 
@@ -302,7 +299,7 @@ public class PlayerTests {
 
     @Test
     public void testPlayerMathTest(){
-        // next two lines are from: https://bugsdb.com/_en/debug/09bdbc2d248d31d6785ba772ea8689cb
+        // Next two lines are from: https://bugsdb.com/_en/debug/09bdbc2d248d31d6785ba772ea8689cb
         ByteArrayInputStream in = new ByteArrayInputStream("64".getBytes());
         System.setIn(in);
 

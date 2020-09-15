@@ -225,8 +225,7 @@ public class AdventureTest {
     }
 
     @Test
-    public void testFindPlayerCurrentRoomNotFound(){
-        try{
+    public void testFindPlayerCurrentRoomNotFound() throws IOException {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PrintStream ps = new PrintStream(baos);
 
@@ -234,20 +233,17 @@ public class AdventureTest {
 
             System.setOut(ps);
 
-            GameEngine invalidJSONEngine = new GameEngine("src/main/java/student/resources/RoomsInvalidTesting.json",
+            GameEngine invalidJSONEngine = new GameEngine("src/main/java/resources/RoomsInvalidTesting.json",
                                                       "bob");
             invalidJSONEngine.player.updatePosition(invalidJSONEngine.board.getRoom(0), "east");
+            System.out.println(invalidJSONEngine.findPlayerCurrentRoom());
 
             System.out.flush();
             System.setOut(old);
 
-            String printedString = baos.toString().split(">")[0];
-            assertEquals("You do not have this item\r\n", printedString);
-        } catch (IOException e){
-            System.out.println("JSON not found");
-        }
-
-
+            String printedString = baos.toString().split("> ")[0];
+            assertEquals("It seems you've wandered off the path of destiny. " +
+                                 "You have been returned to the first room.\r\n", printedString);
     }
 
     @Test

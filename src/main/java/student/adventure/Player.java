@@ -62,7 +62,7 @@ public class Player {
 
     /**
      * Removes item from player and puts it in room if it is,
-     * if item is in player inventory and not in room
+     * If item is in player inventory and not in room
      * @param room player is currently in
      * @param item given item that game checks is in player's inventory and not in room
      */
@@ -183,7 +183,7 @@ public class Player {
     }
 
     /**
-     * checks if the room item is used in, is a valid room for that item to be used
+     * Checks if the room item is used in, is a valid room for that item to be used
      * @param room Room object in which useItem() is called in
      * @param coords valid coords for item to be used in
      * @return boolean depending on wheter or not room is valid for item use
@@ -202,7 +202,6 @@ public class Player {
 
     /**
      * Simulates a math test with basic problems; returns boolean depending on whether or not player passes test
-     * called in useItem for calculator
      * @return boolean representing whether or not player passed test
      */
     private boolean didPlayerAceMathTest(){
@@ -230,7 +229,7 @@ public class Player {
 
     /**
      * Asks player a math question, takes input, and determines if it's correct
-     * called in didPlayerAceMathTest and made public for testing purposes
+     * Made public for testing purposes
      * @param question the question being asked of the player
      * @param correctAnswer correct answer to question
      * @return 1 if player is right, 0 otherwise

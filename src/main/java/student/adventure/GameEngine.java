@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.Scanner;
 
 public class GameEngine {
-    // made protected instead of static for testing purposes
+    // Made protected instead of static for testing purposes
     protected GameBoard board;
     protected Player player;
     private static Scanner gameMaster = new Scanner(System.in);
@@ -58,7 +58,7 @@ public class GameEngine {
 
         while(true){
             room = findPlayerCurrentRoom();
-            // message for when player enters the final/winners Room
+            // Message for when player enters the final/winners Room
             if(Arrays.equals(room.getRoomCoordinates(), winRoom)){
                 System.out.println("You win! Play again to venture back into your dorm");
                 break;
@@ -88,7 +88,7 @@ public class GameEngine {
 
         String[] playerInputs = gameMaster.nextLine().toLowerCase().split(" ");
 
-        // sees how many different words user inputted, tracks both if more than one, only tracks first otherwise
+        // Sees how many different words user inputted, tracks both if more than one, only tracks first otherwise
         String action = playerInputs[0];
         String noun;
         if(playerInputs.length > 1){
@@ -148,7 +148,7 @@ public class GameEngine {
     }
 
     /**
-     * finds room the player is currently in
+     * Finds room the player is currently in
      * @return the Room object player is currently in
      */
     public Room findPlayerCurrentRoom(){
@@ -187,7 +187,7 @@ public class GameEngine {
     public void printOutMap(){
         String[][] mapArray = createMapArray();
 
-        // converts 2d String array into a single String
+        // Converts 2d String array into a single String
         StringBuilder mapString = new StringBuilder();
         for(int j = mapArray.length - 1; j >= 0; j--){
             for(int i = 0; i < mapArray[0].length; i++){
@@ -209,7 +209,7 @@ public class GameEngine {
         int mapSizeX = 0;
         int mapSizeY = 0;
 
-        // get dimensions of map size
+        // Get dimensions of map size
         for(int i = 0; i < board.getBoardSize(); i++) {
             Room room = board.getRoom(i);
 
@@ -228,13 +228,13 @@ public class GameEngine {
     }
 
     /**
-     * creates a map array based on the rooms player has been to
+     * Creates a map array based on the rooms player has been to
      * called in printOutMap
      * @return 2d String array containing a map of all the rooms player has been to
      */
     private String[][] createMapArray(){
         int[] mapDimensions = findMapDimensions();
-        // initialize mapArray with String denoting no room
+        // Initialize mapArray with String denoting no room
         String[][] mapArray = new String[mapDimensions[0]][mapDimensions[1]];
         for(int i = 0; i < mapArray.length; i++){
             for(int j = 0; j < mapArray[0].length; j++){

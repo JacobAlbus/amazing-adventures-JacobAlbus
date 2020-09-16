@@ -18,7 +18,6 @@ public class PlayerTests {
     @Before
     public void setUp() throws IOException {
         engine = new GameEngine("src/main/java/resources/Rooms.json", "bob");
-
     }
 
     @Test
@@ -70,10 +69,9 @@ public class PlayerTests {
     public void testPlayerUpdatePositionInvalidDirection(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
-
         System.setOut(ps);
+
         engine.player.updatePosition(engine.board.getRoom(0), "weast");
 
         System.out.flush();
@@ -87,10 +85,9 @@ public class PlayerTests {
     public void testPlayerUpdatePositionNoInput(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
-
         System.setOut(ps);
+
         engine.player.updatePosition(engine.board.getRoom(0), "weast");
 
         System.out.flush();
@@ -104,9 +101,7 @@ public class PlayerTests {
     public void testCheckInventory(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
-
         System.setOut(ps);
 
         engine.player.takeItem(engine.board.getRoom(1), "torch");
@@ -124,6 +119,7 @@ public class PlayerTests {
         engine.player.takeItem(engine.board.getRoom(1), "torch");
         ArrayList<String> items = engine.player.getItems();
         Assert.assertTrue(items.contains("torch"));
+        assertEquals(1, items.size());
     }
 
     @Test
@@ -131,9 +127,7 @@ public class PlayerTests {
     public void testPlayerTakeItemNotFoundInRoom(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
-
         System.setOut(ps);
 
         engine.player.takeItem(engine.board.getRoom(1), "borch");
@@ -149,10 +143,10 @@ public class PlayerTests {
     public void testPlayerDropsItem(){
         engine.player.updatePosition(engine.board.getRoom(0), "east");
         engine.player.takeItem(engine.board.getRoom(1), "torch");
-        Assert.assertTrue(engine.player.getItems().contains("torch"));
-
         engine.player.dropItem(engine.board.getRoom(1), "torch");
+
         Assert.assertTrue(engine.board.getRoom(1).getAvailableItems().contains("torch"));
+        Assert.assertFalse(engine.player.getItems().contains("torch"));
     }
 
     @Test
@@ -283,7 +277,6 @@ public class PlayerTests {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
         System.setOut(ps);
 
@@ -312,7 +305,6 @@ public class PlayerTests {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
         System.setOut(ps);
 

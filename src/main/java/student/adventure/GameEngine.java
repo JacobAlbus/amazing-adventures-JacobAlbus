@@ -222,8 +222,7 @@ public class GameEngine {
                 }
             }
         }
-        int[] mapDimensions = {mapSizeX, mapSizeY};
-        return mapDimensions;
+        return new int[] {mapSizeX, mapSizeY};
     }
 
     /**

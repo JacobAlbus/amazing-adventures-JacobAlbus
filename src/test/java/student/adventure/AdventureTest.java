@@ -38,9 +38,7 @@ public class AdventureTest {
     public void testProcessInputsInvalidInput(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
-
         System.setOut(ps);
 
         engine.processInputs(engine.board.getRoom(0), "foo", "bar");
@@ -56,9 +54,7 @@ public class AdventureTest {
     public void testProcessInputsExamine(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
-
         System.setOut(ps);
 
         engine.processInputs(engine.board.getRoom(0), "examine", "foo");
@@ -75,9 +71,7 @@ public class AdventureTest {
     public void testProcessInputsTake(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
-
         System.setOut(ps);
 
         engine.processInputs(engine.board.getRoom(0), "take", "foo");
@@ -93,9 +87,7 @@ public class AdventureTest {
     public void testProcessInputsDrop(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
-
         System.setOut(ps);
 
         engine.processInputs(engine.board.getRoom(0), "drop", "foo");
@@ -111,9 +103,7 @@ public class AdventureTest {
     public void testProcessInputsUse(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
-
         System.setOut(ps);
 
         engine.processInputs(engine.board.getRoom(0), "use", "foo");
@@ -129,9 +119,7 @@ public class AdventureTest {
     public void testProcessInputsGo(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
-
         System.setOut(ps);
 
         engine.processInputs(engine.board.getRoom(0), "go", "t");
@@ -147,9 +135,7 @@ public class AdventureTest {
     public void testProcessInputsCheck(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
-
         System.setOut(ps);
 
         engine.processInputs(engine.board.getRoom(0), "check", "foo");
@@ -165,9 +151,7 @@ public class AdventureTest {
     public void testProcessInputsHelp(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
-
         System.setOut(ps);
 
         engine.processInputs(engine.board.getRoom(0), "help", "foo");
@@ -183,9 +167,7 @@ public class AdventureTest {
     public void testProcessInputsDefault(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
-
         System.setOut(ps);
 
         engine.processInputs(engine.board.getRoom(0), "yuppie", "foo");
@@ -202,9 +184,7 @@ public class AdventureTest {
     public void testPrintRoomMessage(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
-
         System.setOut(ps);
 
         engine.board.getRoom(0).printRoomMessage();
@@ -228,9 +208,7 @@ public class AdventureTest {
     public void testFindPlayerCurrentRoomNotFound() throws IOException {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PrintStream ps = new PrintStream(baos);
-
             PrintStream old = System.out;
-
             System.setOut(ps);
 
             GameEngine invalidJSONEngine = new GameEngine("src/main/java/resources/RoomsInvalidTesting.json",
@@ -250,9 +228,7 @@ public class AdventureTest {
     public void testPrintOutSquareMap(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
-
         System.setOut(ps);
 
         engine.player.updatePosition(engine.findPlayerCurrentRoom(), "east");
@@ -272,9 +248,7 @@ public class AdventureTest {
     public void testPrintOutRectangleMap(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
-
         System.setOut(ps);
 
         engine.player.updatePosition(engine.findPlayerCurrentRoom(), "east");
@@ -293,9 +267,7 @@ public class AdventureTest {
     public void testPlayerWins(){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-
         PrintStream old = System.out;
-
         System.setOut(ps);
 
         engine.player.updatePosition(engine.board.getRoom(0), "east");

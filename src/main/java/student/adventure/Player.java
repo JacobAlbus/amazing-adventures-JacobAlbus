@@ -15,16 +15,20 @@ public class Player {
     private ArrayList<String> items = new ArrayList<>();
     private String name;
     private GameBoard board;
+    private GameQuestions questions;
 
     public Player(String playerName) throws IOException {
         this.name = playerName;
 
         try {
             Gson gson = new Gson();
-            Reader reader = Files.newBufferedReader(Paths.get("src/main/java/resources/Rooms.json"));
+            Reader boardReader = Files.newBufferedReader(Paths.get("src/main/java/resources/Rooms.json"));
+            Reader questionsReader = Files.newBufferedReader(
+                    Paths.get("src/main/java/resources/GameQuestions.json"));
 
-            board = gson.fromJson(reader, GameBoard.class);
-            reader.close();
+            questions = gson.fromJson(questionsReader, GameQuestions.class);
+            board = gson.fromJson(boardReader, GameBoard.class);
+            boardReader.close();
         } catch (NullPointerException e) {
             throw new NullPointerException("The json file passed is null");
         } catch (IOException e) {
@@ -53,7 +57,7 @@ public class Player {
         if(room.getAvailableItems().contains(item)){
             items.add(item);
             room.getAvailableItems().remove(item);
-            printInputPrompt();
+            checkInventory();
         } else{
             System.out.println("It seems like the room doesn't have that item");
             printInputPrompt();
@@ -61,8 +65,7 @@ public class Player {
     }
 
     /**
-     * Removes item from player and puts it in room if it is,
-     * If item is in player inventory and not in room
+     * Removes item from player and puts it in room if player has it and room doesn't
      * @param room player is currently in
      * @param item given item that game checks is in player's inventory and not in room
      */
@@ -70,6 +73,7 @@ public class Player {
         if(items.contains(item) && !room.getAvailableItems().contains(item)){
             items.remove(item);
             room.addAvailableItem(item);
+            checkInventory();
             printInputPrompt();
         } else if(room.getAvailableItems().contains(item)){
             System.out.println("Can't drop the item, it's already in the room");
@@ -149,29 +153,29 @@ public class Player {
      * @param room Room object player is currently in
      * @param direction given direction user wants player to go
      */
-    public void updatePosition(Room room, String direction){
+    public Room updatePosition(Room room, String direction){
         String[] directions = {"east", "north", "west", "south"};
 
         if(Arrays.asList(directions).contains(direction) && room.getAvailableDoors().contains(direction)){
             switch(direction){
                 case "east":
                     position[0] += 1;
-                    break;
+                    return board.findPlayerCurrentRoom(this);
                 case "north":
                     position[1] += 1;
-                    break;
+                    return board.findPlayerCurrentRoom(this);
                 case "west":
                     position[0] -= 1;
-                    break;
+                    return board.findPlayerCurrentRoom(this);
                 case "south":
                     position[1] -= 1;
-                    break;
+                    return board.findPlayerCurrentRoom(this);
             }
         } else{
             System.out.println("You cannot go in that direction");
             printInputPrompt();
         }
-
+        return board.findPlayerCurrentRoom(this);
     }
 
     /**
@@ -209,13 +213,10 @@ public class Player {
 
         System.out.println("You have begun the eternal math test, pick your answers wisely!");
 
-        numCorrect += this.mathQuestion("What is the product of the squares of four and two", "64");
-        numCorrect += this.mathQuestion("Give me pi to the first 3 digits", "3.14");
-        numCorrect += this.mathQuestion("What is the standard representation " +
-                "for the square root of negative one", "i");
-        numCorrect += this.mathQuestion("What is the cube of the sixth element " +
-                "in the set of all natural numbers", "216");
-        numCorrect += this.mathQuestion("What is the factorial of 0", "1");
+        for(int index = 0; index < questions.listSize(); index++){
+            Question question = questions.getGameQuestions(index);
+            numCorrect += this.mathQuestion(question.getQuestion(), question.getAnswer());
+        }
 
         if(numCorrect >= 4){
             System.out.println("Congratulations, you have passed the test");

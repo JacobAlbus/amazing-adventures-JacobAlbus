@@ -8,12 +8,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class AdventureTest {
+public class EngineTest {
     GameEngine engine;
+    Player player;
+    GameBoard board;
 
     @Before
     public void setUp() throws IOException {
         engine = new GameEngine("src/main/java/resources/Rooms.json", "bob");
+        player = engine.player;
+        board = engine.board;
     }
 
     @Test
@@ -41,7 +45,7 @@ public class AdventureTest {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.processInputs(engine.board.getRoom(0), "foo", "bar");
+        engine.processInputs(board.getRoom(0), "foo", "bar");
 
         System.out.flush();
         System.setOut(old);
@@ -57,7 +61,7 @@ public class AdventureTest {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.processInputs(engine.board.getRoom(0), "examine", "foo");
+        engine.processInputs(board.getRoom(0), "examine", "foo");
 
         System.out.flush();
         System.setOut(old);
@@ -74,7 +78,7 @@ public class AdventureTest {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.processInputs(engine.board.getRoom(0), "take", "foo");
+        engine.processInputs(board.getRoom(0), "take", "foo");
 
         System.out.flush();
         System.setOut(old);
@@ -90,7 +94,7 @@ public class AdventureTest {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.processInputs(engine.board.getRoom(0), "drop", "foo");
+        engine.processInputs(board.getRoom(0), "drop", "foo");
 
         System.out.flush();
         System.setOut(old);
@@ -106,7 +110,7 @@ public class AdventureTest {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.processInputs(engine.board.getRoom(0), "use", "foo");
+        engine.processInputs(board.getRoom(0), "use", "foo");
 
         System.out.flush();
         System.setOut(old);
@@ -122,7 +126,7 @@ public class AdventureTest {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.processInputs(engine.board.getRoom(0), "go", "t");
+        engine.processInputs(board.getRoom(0), "go", "t");
 
         System.out.flush();
         System.setOut(old);
@@ -138,7 +142,7 @@ public class AdventureTest {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.processInputs(engine.board.getRoom(0), "check", "foo");
+        engine.processInputs(board.getRoom(0), "check", "foo");
 
         System.out.flush();
         System.setOut(old);
@@ -154,7 +158,7 @@ public class AdventureTest {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.processInputs(engine.board.getRoom(0), "help", "foo");
+        engine.processInputs(board.getRoom(0), "help", "foo");
 
         System.out.flush();
         System.setOut(old);
@@ -170,7 +174,7 @@ public class AdventureTest {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.processInputs(engine.board.getRoom(0), "yuppie", "foo");
+        engine.processInputs(board.getRoom(0), "yuppie", "foo");
 
         System.out.flush();
         System.setOut(old);
@@ -181,40 +185,19 @@ public class AdventureTest {
     }
 
     @Test
-    public void testPrintRoomMessage(){
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(baos);
-        PrintStream old = System.out;
-        System.setOut(ps);
-
-        engine.board.getRoom(0).printRoomMessage();
-
-        System.out.flush();
-        System.setOut(old);
-
-        String printedString = baos.toString().split(">")[0];
-        assertEquals("You're in a dark room with one visible door." +
-                                "\r\nDirection: east \r\nItems:  \r\n", printedString);
-    }
-
-    @Test
-    public void testFindPlayerCurrentRoom(){
-        Room room = engine.findPlayerCurrentRoom();
-
-        assertArrayEquals(room.getRoomCoordinates(), engine.player.getPosition());
-    }
-
-    @Test
     public void testFindPlayerCurrentRoomNotFound() throws IOException {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PrintStream ps = new PrintStream(baos);
             PrintStream old = System.out;
             System.setOut(ps);
 
-            GameEngine invalidJSONEngine = new GameEngine("src/main/java/resources/RoomsInvalidTesting.json",
+            GameEngine testEngine = new GameEngine("src/main/java/resources/RoomsInvalidTesting.json",
                                                       "bob");
-            invalidJSONEngine.player.updatePosition(invalidJSONEngine.board.getRoom(0), "east");
-            System.out.println(invalidJSONEngine.findPlayerCurrentRoom());
+            Player testPlayer = testEngine.player;
+            GameBoard testBoard = testEngine.board;
+
+            testPlayer.updatePosition(testBoard.getRoom(0), "east");
+            System.out.println(testBoard.findPlayerCurrentRoom(testPlayer));
 
             System.out.flush();
             System.setOut(old);
@@ -231,9 +214,9 @@ public class AdventureTest {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.player.updatePosition(engine.findPlayerCurrentRoom(), "east");
-        engine.player.updatePosition(engine.findPlayerCurrentRoom(), "north");
-        engine.player.updatePosition(engine.findPlayerCurrentRoom(), "north");
+        player.updatePosition(board.findPlayerCurrentRoom(player), "east");
+        player.updatePosition(board.findPlayerCurrentRoom(player), "north");
+        player.updatePosition(board.findPlayerCurrentRoom(player), "north");
         engine.printOutMap();
 
         System.out.flush();
@@ -251,8 +234,8 @@ public class AdventureTest {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.player.updatePosition(engine.findPlayerCurrentRoom(), "east");
-        engine.player.updatePosition(engine.findPlayerCurrentRoom(), "east");
+        player.updatePosition(board.findPlayerCurrentRoom(player), "east");
+        player.updatePosition(board.findPlayerCurrentRoom(player), "east");
         engine.printOutMap();
 
         System.out.flush();
@@ -270,27 +253,27 @@ public class AdventureTest {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.player.updatePosition(engine.board.getRoom(0), "east");
-        engine.player.takeItem(engine.board.getRoom(1), "torch");
-        engine.player.updatePosition(engine.board.getRoom(1), "west");
-        engine.player.useItem(engine.board.getRoom(0), "torch");
-        engine.player.takeItem(engine.board.getRoom(0), "key");
-        engine.player.updatePosition(engine.board.getRoom(0), "east");
-        engine.player.updatePosition(engine.board.getRoom(1), "north");
-        engine.player.useItem(engine.board.getRoom(2), "key");
-        engine.player.updatePosition(engine.board.getRoom(2), "north");
-        engine.player.updatePosition(engine.board.getRoom(3), "north");
-        engine.player.takeItem(engine.board.getRoom(6), "calculator");
-        engine.player.updatePosition(engine.board.getRoom(6), "south");
-        engine.player.updatePosition(engine.board.getRoom(3), "east");
-        engine.board.getRoom(5).addAvailableDoors("east");
-        engine.player.updatePosition(engine.board.getRoom(5), "east");
-        engine.player.takeItem(engine.board.getRoom(7), "lighter");
-        engine.player.updatePosition(engine.board.getRoom(7), "east");
-        engine.player.useItem(engine.board.getRoom(8), "lighter");
-        engine.player.updatePosition(engine.board.getRoom(8), "south");
-        engine.player.updatePosition(engine.board.getRoom(9), "south");
-        engine.processInputs(engine.findPlayerCurrentRoom(), "examine", "");
+        player.updatePosition(board.getRoom(0), "east");
+        player.takeItem(board.getRoom(1), "torch");
+        player.updatePosition(board.getRoom(1), "west");
+        player.useItem(board.getRoom(0), "torch");
+        player.takeItem(board.getRoom(0), "key");
+        player.updatePosition(board.getRoom(0), "east");
+        player.updatePosition(board.getRoom(1), "north");
+        player.useItem(board.getRoom(2), "key");
+        player.updatePosition(board.getRoom(2), "north");
+        player.updatePosition(board.getRoom(3), "north");
+        player.takeItem(board.getRoom(6), "calculator");
+        player.updatePosition(board.getRoom(6), "south");
+        player.updatePosition(board.getRoom(3), "east");
+        board.getRoom(5).addAvailableDoors("east");
+        player.updatePosition(board.getRoom(5), "east");
+        player.takeItem(board.getRoom(7), "lighter");
+        player.updatePosition(board.getRoom(7), "east");
+        player.useItem(board.getRoom(8), "lighter");
+        player.updatePosition(board.getRoom(8), "south");
+        player.updatePosition(board.getRoom(9), "south");
+        engine.processInputs(board.findPlayerCurrentRoom(player), "examine", "");
 
         engine.gameLoop();
         System.out.flush();

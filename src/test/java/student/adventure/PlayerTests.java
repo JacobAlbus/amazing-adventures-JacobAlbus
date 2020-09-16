@@ -14,29 +14,33 @@ import org.junit.Test;
 
 public class PlayerTests {
     GameEngine engine;
+    Player player;
+    GameBoard board;
 
     @Before
     public void setUp() throws IOException {
         engine = new GameEngine("src/main/java/resources/Rooms.json", "bob");
+        player = engine.player;
+        board = engine.board;
     }
 
     @Test
     public void testPlayerUpdatePositionEast(){
-        engine.player.updatePosition(engine.board.getRoom(0),"east");
+        player.updatePosition(board.getRoom(0),"east");
 
-        int [] position = engine.player.getPosition();
-        int [] roomCoordinates = engine.board.getRoom(1).getRoomCoordinates();
+        int [] position = player.getPosition();
+        int [] roomCoordinates = board.getRoom(1).getRoomCoordinates();
 
         assertArrayEquals(roomCoordinates, position);
     }
 
     @Test
     public void testPlayerUpdatePositionWest(){
-        engine.player.updatePosition(engine.board.getRoom(0),"east");
-        engine.player.updatePosition(engine.board.getRoom(1),"west");
+        player.updatePosition(board.getRoom(0),"east");
+        player.updatePosition(board.getRoom(1),"west");
 
-        int [] position = engine.player.getPosition();
-        int [] roomCoordinates = engine.board.getRoom(0).getRoomCoordinates();
+        int [] position = player.getPosition();
+        int [] roomCoordinates = board.getRoom(0).getRoomCoordinates();
 
 
         assertArrayEquals(roomCoordinates, position);
@@ -44,23 +48,23 @@ public class PlayerTests {
 
     @Test
     public void testPlayerUpdatePositionNorth(){
-        engine.player.updatePosition(engine.board.getRoom(0),"east");
-        engine.player.updatePosition(engine.board.getRoom(1),"north");
+        player.updatePosition(board.getRoom(0),"east");
+        player.updatePosition(board.getRoom(1),"north");
 
-        int [] position = engine.player.getPosition();
-        int [] roomCoordinates = engine.board.getRoom(2).getRoomCoordinates();
+        int [] position = player.getPosition();
+        int [] roomCoordinates = board.getRoom(2).getRoomCoordinates();
 
         assertArrayEquals(roomCoordinates, position);
     }
 
     @Test
     public void testPlayerUpdatePositionSouth(){
-        engine.player.updatePosition(engine.board.getRoom(0),"east");
-        engine.player.updatePosition(engine.board.getRoom(1),"north");
-        engine.player.updatePosition(engine.board.getRoom(2),"south");
+        player.updatePosition(board.getRoom(0),"east");
+        player.updatePosition(board.getRoom(1),"north");
+        player.updatePosition(board.getRoom(2),"south");
 
-        int [] position = engine.player.getPosition();
-        int [] roomCoordinates = engine.board.getRoom(1).getRoomCoordinates();
+        int [] position = player.getPosition();
+        int [] roomCoordinates = board.getRoom(1).getRoomCoordinates();
 
         assertArrayEquals(roomCoordinates, position);
     }
@@ -72,7 +76,7 @@ public class PlayerTests {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.player.updatePosition(engine.board.getRoom(0), "weast");
+        player.updatePosition(board.getRoom(0), "weast");
 
         System.out.flush();
         System.setOut(old);
@@ -88,7 +92,7 @@ public class PlayerTests {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.player.updatePosition(engine.board.getRoom(0), "weast");
+        player.updatePosition(board.getRoom(0), "weast");
 
         System.out.flush();
         System.setOut(old);
@@ -104,8 +108,8 @@ public class PlayerTests {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.player.takeItem(engine.board.getRoom(1), "torch");
-        engine.player.checkInventory();
+        player.takeItem(board.getRoom(1), "torch");
+        player.checkInventory();
 
         System.out.flush();
         System.setOut(old);
@@ -116,8 +120,8 @@ public class PlayerTests {
 
     @Test
     public void testPlayerTakeItem(){
-        engine.player.takeItem(engine.board.getRoom(1), "torch");
-        ArrayList<String> items = engine.player.getItems();
+        player.takeItem(board.getRoom(1), "torch");
+        ArrayList<String> items = player.getItems();
         Assert.assertTrue(items.contains("torch"));
         assertEquals(1, items.size());
     }
@@ -130,7 +134,7 @@ public class PlayerTests {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.player.takeItem(engine.board.getRoom(1), "borch");
+        player.takeItem(board.getRoom(1), "borch");
 
         System.out.flush();
         System.setOut(old);
@@ -141,12 +145,12 @@ public class PlayerTests {
 
     @Test
     public void testPlayerDropsItem(){
-        engine.player.updatePosition(engine.board.getRoom(0), "east");
-        engine.player.takeItem(engine.board.getRoom(1), "torch");
-        engine.player.dropItem(engine.board.getRoom(1), "torch");
+        player.updatePosition(board.getRoom(0), "east");
+        player.takeItem(board.getRoom(1), "torch");
+        player.dropItem(board.getRoom(1), "torch");
 
-        Assert.assertTrue(engine.board.getRoom(1).getAvailableItems().contains("torch"));
-        Assert.assertFalse(engine.player.getItems().contains("torch"));
+        Assert.assertTrue(board.getRoom(1).getAvailableItems().contains("torch"));
+        Assert.assertFalse(player.getItems().contains("torch"));
     }
 
     @Test
@@ -158,7 +162,7 @@ public class PlayerTests {
 
         System.setOut(ps);
 
-        engine.player.dropItem(engine.board.getRoom(0), "torch");
+        player.dropItem(board.getRoom(0), "torch");
 
         System.out.flush();
         System.setOut(old);
@@ -175,8 +179,8 @@ public class PlayerTests {
         PrintStream old = System.out;
 
         System.setOut(ps);
-        engine.player.takeItem(engine.board.getRoom(2), "torch");
-        engine.player.dropItem(engine.board.getRoom(1), "torch");
+        player.takeItem(board.getRoom(2), "torch");
+        player.dropItem(board.getRoom(1), "torch");
 
         System.out.flush();
         System.setOut(old);
@@ -193,7 +197,7 @@ public class PlayerTests {
         PrintStream old = System.out;
 
         System.setOut(ps);
-        engine.player.useItem(engine.board.getRoom(0), "torch");
+        player.useItem(board.getRoom(0), "torch");
 
         System.out.flush();
         System.setOut(old);
@@ -210,8 +214,8 @@ public class PlayerTests {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.player.takeItem(engine.board.getRoom(1), "torch");
-        engine.player.useItem(engine.board.getRoom(1), "torch");
+        player.takeItem(board.getRoom(1), "torch");
+        player.useItem(board.getRoom(1), "torch");
 
         System.out.flush();
         System.setOut(old);
@@ -228,43 +232,43 @@ public class PlayerTests {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.player.takeItem(engine.board.getRoom(4), "knife");
-        engine.player.useItem(engine.board.getRoom(4), "knife");
+        player.takeItem(board.getRoom(4), "knife");
+        player.useItem(board.getRoom(4), "knife");
 
         System.out.flush();
         System.setOut(old);
 
         String printedString = baos.toString();
-        assertEquals("> Sorry but that item has no use\r\n> ", printedString);
+        assertEquals("bob's Inventory: [knife]\r\n> Sorry but that item has no use\r\n> ", printedString);
     }
 
     @Test
     public void testPlayerUsesTorch(){
-        engine.player.takeItem(engine.board.getRoom(1), "torch");
-        engine.player.useItem(engine.board.getRoom(0), "torch");
+        player.takeItem(board.getRoom(1), "torch");
+        player.useItem(board.getRoom(0), "torch");
 
-        String description = engine.board.getRoom(0).getPrimaryDescription();
+        String description = board.getRoom(0).getPrimaryDescription();
         assertEquals("After using the torch, you see a sparkle in one of the cracks. " +
                 "After investigating, you see a key", description);
     }
 
     @Test
     public void testPlayerUsesKey(){
-        engine.player.takeItem(engine.board.getRoom(1), "torch");
-        engine.player.useItem(engine.board.getRoom(0), "torch");
-        engine.player.takeItem(engine.board.getRoom(0), "key");
-        engine.player.useItem(engine.board.getRoom(2), "key");
+        player.takeItem(board.getRoom(1), "torch");
+        player.useItem(board.getRoom(0), "torch");
+        player.takeItem(board.getRoom(0), "key");
+        player.useItem(board.getRoom(2), "key");
 
-        String description = engine.board.getRoom(2).getPrimaryDescription();
+        String description = board.getRoom(2).getPrimaryDescription();
         assertEquals("The door at the north end opened!", description);
     }
 
     @Test
     public void testPlayerUsesLighter(){
-        engine.player.takeItem(engine.board.getRoom(7), "lighter");
-        engine.player.useItem(engine.board.getRoom(8), "lighter");
+        player.takeItem(board.getRoom(7), "lighter");
+        player.useItem(board.getRoom(8), "lighter");
 
-        String description = engine.board.getRoom(8).getPrimaryDescription();
+        String description = board.getRoom(8).getPrimaryDescription();
         assertEquals("WOW, the smell of rotten eggs was actually a gas leak " +
                 "and the lighter caused the room to combust. The south door was blown down", description);
     }
@@ -281,8 +285,8 @@ public class PlayerTests {
         System.setOut(ps);
 
         try{
-            engine.player.takeItem(engine.board.getRoom(6), "calculator");
-            engine.player.useItem(engine.board.getRoom(5), "calculator");
+            player.takeItem(board.getRoom(6), "calculator");
+            player.useItem(board.getRoom(5), "calculator");
         } catch (NoSuchElementException e){
             in = new ByteArrayInputStream("64".getBytes());
             System.setIn(in);
@@ -308,7 +312,7 @@ public class PlayerTests {
         PrintStream old = System.out;
         System.setOut(ps);
 
-        engine.player.mathQuestion("What's 4 times 16", "64");
+        player.mathQuestion("What's 4 times 16", "64");
 
         System.out.flush();
         System.setOut(old);

@@ -52,12 +52,12 @@ public class GameEngine {
      * processes input to figure out what player wants to do
      */
     public void gameLoop(){
-        Room room = findPlayerCurrentRoom();
+        Room room = board.findPlayerCurrentRoom(player);
         room.printRoomMessage();
         int[] winRoom = board.getRoom(10).getRoomCoordinates();
 
         while(true){
-            room = findPlayerCurrentRoom();
+            room = board.findPlayerCurrentRoom(player);
             // Message for when player enters the final/winners Room
             if(Arrays.equals(room.getRoomCoordinates(), winRoom)){
                 System.out.println("You win! Play again to venture back into your dorm");
@@ -88,7 +88,8 @@ public class GameEngine {
 
         String[] playerInputs = gameMaster.nextLine().toLowerCase().split(" ");
 
-        // Sees how many different words user inputted, tracks both if more than one, only tracks first otherwise
+        // Sees how many different words user inputted,
+        // tracks first and second if more than one, only tracks first otherwise
         String action = playerInputs[0];
         String noun;
         if(playerInputs.length > 1){
@@ -128,9 +129,10 @@ public class GameEngine {
                 player.useItem(room, noun);
                 break;
             case "go":
-                player.updatePosition(room, noun);
-                room = findPlayerCurrentRoom();
-                room.printRoomMessage();
+                Room updatedRoom = player.updatePosition(room, noun);
+                if(!Arrays.equals(room.getRoomCoordinates(), updatedRoom.getRoomCoordinates())){
+                    updatedRoom.printRoomMessage();
+                }
                 break;
             case "check":
                 player.checkInventory();
@@ -145,40 +147,6 @@ public class GameEngine {
                 System.out.println("I couldn't understand that command. Input 'help' to see list of commands");
                 printInputPrompt();
         }
-    }
-
-    /**
-     * Finds room the player is currently in
-     * @return the Room object player is currently in
-     */
-    public Room findPlayerCurrentRoom(){
-        for(int roomIndex = 0; roomIndex < board.getBoardSize(); roomIndex++){
-            Room room = board.getRoom(roomIndex);
-            if(Arrays.equals(player.getPosition(), room.getRoomCoordinates())){
-                room.setHasPlayerBeenHere(true);
-                return room;
-            }
-        }
-        // Returns player to first room if current room isn't found in GameBoard
-        System.out.println("It seems you've wandered off the path of destiny. " +
-                            "You have been returned to the first room.");
-        printInputPrompt();
-        player.setPosition(board.getRoom(0).getRoomCoordinates());
-        return board.getRoom(0);
-    }
-
-    /**
-     * Prints a list of commands recognized by student.adventure.GameEngine
-     */
-    public void printHelpCommands(){
-        System.out.println("Input go + 'direction' (east, west, north, south) to through corresponding direction \n" +
-                "Input take + 'item' to grab item from room \n" +
-                "Input use + 'item' to use item in inventory \n" +
-                "Input drop + 'item' to drop item from inventory and leave it in room \n" +
-                "Input examine to see room information \n" +
-                "Input check to see all items currently in inventory \n" +
-                "Input exit or quit to stop playing Adventure");
-        printInputPrompt();
     }
 
     /**
@@ -197,6 +165,20 @@ public class GameEngine {
         }
 
         System.out.println(mapString);
+        printInputPrompt();
+    }
+
+    /**
+     * Prints a list of commands recognized by student.adventure.GameEngine
+     */
+    public void printHelpCommands(){
+        System.out.println("Input go + 'direction' (east, west, north, south) to through corresponding direction \n" +
+                "Input take + 'item' to grab item from room \n" +
+                "Input use + 'item' to use item in inventory \n" +
+                "Input drop + 'item' to drop item from inventory and leave it in room \n" +
+                "Input examine to see room information \n" +
+                "Input check to see all items currently in inventory \n" +
+                "Input exit or quit to stop playing Adventure");
         printInputPrompt();
     }
 
@@ -222,12 +204,12 @@ public class GameEngine {
                 }
             }
         }
+
         return new int[] {mapSizeX, mapSizeY};
     }
 
     /**
      * Creates a map array based on the rooms player has been to
-     * called in printOutMap
      * @return 2d String array containing a map of all the rooms player has been to
      */
     private String[][] createMapArray(){
@@ -239,7 +221,7 @@ public class GameEngine {
             Arrays.fill(mapRow, "0");
         }
 
-        // populate map with rooms with '1' being a room
+        // populate map with rooms with '1' denoting a room
         for(int roomIndex = 0; roomIndex < board.getBoardSize(); roomIndex++) {
             Room room = board.getRoom(roomIndex);
 

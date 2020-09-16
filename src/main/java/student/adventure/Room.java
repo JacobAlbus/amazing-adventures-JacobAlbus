@@ -78,7 +78,7 @@ public class Room {
     }
 
     /**
-     * Prints a formatted message depending on which room player is in
+     * Prints a formatted message containing the info for each room
      */
     public void printRoomMessage(){
         System.out.println(primaryDescription);
